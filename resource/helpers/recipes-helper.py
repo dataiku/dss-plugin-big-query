@@ -1,35 +1,34 @@
 import dataiku
 
-
 def do(payload, config, plugin_config, inputs):
     mydataset = dataiku.Dataset("nestedinput")
     schema = mydataset.read_schema()
     schema_columns = [col for col in schema]
 
-    response = {"inputSchema": [
-        ["Last layer", "last"],
-        ["All layers", "all"],
-        ["N last layers", "n_last"]
-    ]}
+    #response = {"inputSchema": [
+    #    ["Last layer", "last"],
+    #    ["All layers", "all"],
+    #    ["N last layers", "n_last"]
+    #]}
+    response = { "inputSchema": get_elements(schema_columns) }
 
     return response
 
-def yolo(columns, prefix=""):
+def get_elements(columns, prefix=""):
     output = []
     for col in columns:
         if col["type"] == "array":
-            if prefix == "":
-                output += [col["name"]]
-            else:
-                # TODO explain
-                output += [prefix + "." + col["name"]]
-            output += ["array"]
+            if col["name"] != "":
+                output += [[prefix + col["name"] + " (as is)", prefix + col["name"]]]
+                output += [[prefix + col["name"] + "[] (unnest)", prefix + col["name"] + "[]"]]
+                array_content = col["arrayContent"]
+                if array_content["type"] == "object":
+                    output += get_elements(array_content["objectFields"], prefix + col["name"] + "[].")
+                # TODO check array of array
         elif col["type"] == "object":
-            output += ["object"]
+            output += [[prefix + col["name"], prefix + col["name"]]]
+            output += get_elements(col["objectFields"], prefix + col["name"] + ".")
         else:
-            if prefix == "":
-                output += [col["name"]]
-            else:
-                # TODO explain
-                output += [prefix + "." + col["name"]]
+            if col["name"] != "":
+                output += [[prefix + col["name"], prefix + col["name"]]]
     return output
