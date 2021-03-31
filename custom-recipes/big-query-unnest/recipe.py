@@ -1,42 +1,22 @@
 from dataiku.customrecipe import get_recipe_config
+from dataiku.core.sql import SQLExecutor2
+from recipe_config_loading import get_input_output, parse_recipe_config
+from query_generator import generate_query
+import logging
 
-import dku_deeplearning_image.utils as utils
-import dku_deeplearning_image.dku_constants as constants
-from dku_deeplearning_image.config_handler import create_dku_config
+# retrieve all the recipe UI parameters (from $scope.config)
+recipe_config = get_recipe_config()
+logging.info("recipe_config: " + recipe_config)
 
+# retrieve the input and output dataiku.Dataset using their "name" in the recipe.json file
+input_dataset, output_dataset = get_input_output()
 
-from dku_deeplearning_image.recipes import RetrainRecipe
-from dku_deeplearning_image.misc_objects import DkuFileManager
+# parse the UI parameters into a dict
+params = parse_recipe_config(recipe_config)
 
+# generate a BigQuery query from the parsed UI parameters and the input_dataset (needed to know the connection type, but we could hardcode 'BigQuery')
+query = generate_query(params, input_dataset)
 
-def format_label_df(label_dataset, col_filename, col_label):
-    renaming_mapping = {col_filename: constants.FILENAME, col_label: constants.LABEL}
-    label_df = label_dataset.get_dataframe().rename(columns=renaming_mapping)[list(renaming_mapping.values())]
-    return label_df
-
-
-def get_input_output():
-    file_manager = DkuFileManager()
-    image_folder = file_manager.get_input_folder("image_folder")
-    model_folder = file_manager.get_input_folder("model_folder")
-    label_dataset = file_manager.get_input_dataset("label_dataset")
-    output_folder = file_manager.get_output_folder("model_output")
-    return image_folder, label_dataset, model_folder, output_folder
-
-
-def save_output_model(output_folder, model):
-    model.save_to_folder(new_folder=output_folder)
-
-
-@utils.log_func(txt="recipes")
-def run():
-    recipe_config = get_recipe_config()
-    config = create_dku_config(recipe_config, constants.RETRAIN)
-    image_folder, label_dataset, model_folder, output_folder = get_input_output()
-    label_df = format_label_df(label_dataset, config.col_filename, config.col_label)
-    recipe = RetrainRecipe(config)
-    new_model = recipe.compute(image_folder, model_folder, label_df, output_folder)
-    save_output_model(output_folder, new_model)
-
-
-run()
+# Push the query on the BigQuery engine and put the results of the execution of the select query into the output_dataset
+sql_executor = SQLExecutor2(dataset=input_dataset)
+sql_executor.exec_recipe_fragment(output_dataset, query)

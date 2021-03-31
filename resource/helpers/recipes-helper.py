@@ -1,18 +1,20 @@
 import dataiku
 
+
 def do(payload, config, plugin_config, inputs):
-    mydataset = dataiku.Dataset("nestedinput")
-    schema = mydataset.read_schema()
+    dataset = dataiku.Dataset(inputs[0]["fullName"])
+    schema = dataset.read_schema()
     schema_columns = [col for col in schema]
 
-    #response = {"inputSchema": [
+    # response = {"inputSchema": [
     #    ["Last layer", "last"],
     #    ["All layers", "all"],
     #    ["N last layers", "n_last"]
-    #]}
-    response = { "inputSchema": get_elements(schema_columns) }
+    # ]}
+    response = {"inputSchema": get_elements(schema_columns)}
 
     return response
+
 
 def get_elements(columns, prefix=""):
     output = []
