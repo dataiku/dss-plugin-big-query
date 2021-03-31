@@ -1,0 +1,34 @@
+{
+    "meta": {
+        "label": "BigQuery Unnest",
+        "description": "BigQuery",
+        "icon": "icon-beer"
+    },
+    "kind": "PYTHON",
+    "selectableFromDataset": "input_dataset",
+    "inputRoles": [
+        {
+            "name": "input_dataset",
+            "label": "Input dataset",
+            "description": "Select a BigQuery dataset with nested data.",
+            "arity": "UNARY",
+            "required": true,
+            "acceptsDataset": true,
+            "mustBeStrictlyType": "BigQuery"
+        }
+    ],
+    "outputRoles": [
+        {
+            "name": "output_dataset",
+            "label": "Output dataset",
+            "description": "Select a BigQuery dataset to place flatten data.",
+            "arity": "UNARY",
+            "required": true,
+            "acceptsDataset": true,
+            "mustBeStrictlyType": "BigQuery"
+        }
+    ],
+    "paramsTemplate": "templates/unnest-recipe-template.html",
+    "paramsModule": "bigQueryUnnest.recipe",
+    "paramsPythonSetup": "helpers/recipes-helper.py"
+}
