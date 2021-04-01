@@ -5,7 +5,7 @@ from dataiku.customrecipe import (
     get_input_names_for_role,
     get_output_names_for_role,
 )
-
+import logging
 
 def get_input_output():
     # retrieve the input and output dataset of the recipe
@@ -20,5 +20,7 @@ def parse_recipe_config(recipe_config):
     # function to parse the UI parameters of recipe_config and put them into a params dict (or better we could do a class)
     # can use this to validate the parameters and raise the appropriate errors to the UI
     params = {}
-    params["columns_to_unnest"] = recipe_config.get("columns_to_unnest")
+    logging.error("recipe_config:")
+    logging.error(recipe_config)
+    params["field_to_keep"] = recipe_config.get("field_to_keep")
     return params

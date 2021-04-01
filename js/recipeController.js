@@ -7,23 +7,20 @@ const app = angular.module('bigQueryUnnest.recipe', []);
 app.controller('unnestRecipeController', function ($scope, utils) {
 
     const updateScopeData = function (data) {
-        console.log(data)
         $scope.inputSchema = data.inputSchema;
+        if (data.inputSchema.length > 0) {
+            utils.initVariable($scope, 'field_to_keep', data.inputSchema[0][1]);
+        } else {
+            utils.initVariable($scope, 'field_to_keep', '');
+        }
     };
 
     const initVariables = function () {
-        utils.initVariable($scope, 'layer_to_retrain', 'last');
     };
 
     const init = function () {
         initVariables();
-        console.log("ok1")
-        console.log($scope)
-        console.log("ok2")
         utils.retrieveInfoBackend($scope, "uselessForNow", updateScopeData);
-        console.log("ok3")
-        console.log($scope)
-        console.log("ok4")
     };
 
     init();
