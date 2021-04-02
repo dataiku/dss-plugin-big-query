@@ -17,7 +17,7 @@ def get_elements(columns, prefix=""):
                 array_content = col["arrayContent"]
                 if array_content["type"] == "object":
                     output += get_elements(array_content["objectFields"], prefix + col["name"] + "[].")
-                # TODO check array of array
+                # Note: you cannot have array of array in bigquery. Lucky us.
         elif col["type"] == "object":
             output += [[prefix + col["name"], prefix + col["name"]]]
             output += get_elements(col["objectFields"], prefix + col["name"] + ".")
