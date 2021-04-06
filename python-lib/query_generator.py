@@ -8,10 +8,10 @@ import logging
 def generate_query(params, dataset):
     logging.error("params")
     logging.error(params)
+    logging.error("-------------")
     # TODO: currently faking complex input, needs to be real later
     inputs = [params["field_to_keep"]]
     output_name = params["output_name"]
-    logging.error("-------------")
     query = SelectQuery()
     query.select_from(dataset)
 
@@ -32,13 +32,17 @@ def generate_query(params, dataset):
         prefix = ""
         for input_part in input_parts:
             if prefix:
-                techn_name = get_technical_column_name([prefix, input_part])
-                unnest_expressions += ["LEFT JOIN UNNEST(" + prefix + input_part + ") AS " + techn_name]
+                # on the last iteration of the loop from a[].b[].c[]
+                # tech_name will be a__b__c_
+                # current_path will be a__b_.c
+                tech_name = get_technical_column_name([prefix, input_part])
+                current_path = prefix + input_part
+                unnest_expressions += [get_unnest_command(current_path, tech_name)]
             else:
                 # add "dku_" key to avoid conflict with user data
-                techn_name = "dku_" + get_technical_column_name([input_part])
-                unnest_expressions += ["LEFT JOIN UNNEST(" + input_part + ") AS " + techn_name]
-            prefix = techn_name[:-1] # Remove the last "_" so the prefix can be joined again
+                tech_name = "dku_" + get_technical_column_name([input_part])
+                unnest_expressions += [get_unnest_command(input_part, tech_name)]
+            prefix = tech_name[:-1] # Remove the last "_" so the prefix can be joined again
     output_query += "\n".join(unnest_expressions) + "\n"
 
     # TODO support the output schema
@@ -83,12 +87,11 @@ def get_technical_column_name(splitted_path):
     """
     return "_".join(splitted_path).replace(".", "_") + "_"
 
-def get_unnest_command(default_name, path):
+def get_unnest_command(path, name):
     """
-    TODO unused? to remove!
     Return the unnest SQL command for a given path
-    :param default_name: user defined name for the variable (may be null)
     :param path: path to reach the variable, will be used to generated a name if default_name is empty
+    :param name: name of the intermediate variable
     :return: the unnest SQL command as a String
     """
-    return "LEFT JOIN UNNEST(" + path + ") AS " #+ get_column_name(path, default_name) + "\n"
+    return "LEFT JOIN UNNEST(" + path + ") AS " + name

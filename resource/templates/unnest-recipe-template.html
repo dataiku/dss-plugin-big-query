@@ -16,6 +16,8 @@
                     <input type="text" ng-model="config.outputName" />
                 </div>
             </div>
+            <mapping-nested add-label="Add renaming" ng-model="step.params.renamings" on-change="!processorForm.$error.required ? checkAndRefresh() : ''" no-change-on-add="true" type-ahead="step.$stepState.change.columnsBeforeStep" required="true"></mapping-nested>
+
         </div>
     </form>
 </div>
