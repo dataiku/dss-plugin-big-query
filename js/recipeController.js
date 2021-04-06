@@ -9,9 +9,9 @@ app.controller('unnestRecipeController', function ($scope, utils) {
     const updateScopeData = function (data) {
         $scope.inputSchema = data.inputSchema;
         if (data.inputSchema.length > 0) {
-            utils.initVariable($scope, 'field_to_keep', data.inputSchema[0][1]);
+            utils.initVariable($scope, 'fieldToKeep', data.inputSchema[0][1]);
         } else {
-            utils.initVariable($scope, 'field_to_keep', '');
+            utils.initVariable($scope, 'fieldToKeep', '');
         }
     };
 

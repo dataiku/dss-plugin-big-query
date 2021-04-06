@@ -22,5 +22,6 @@ def parse_recipe_config(recipe_config):
     params = {}
     logging.error("recipe_config:")
     logging.error(recipe_config)
-    params["field_to_keep"] = recipe_config.get("field_to_keep")
+    params["field_to_keep"] = recipe_config.get("fieldToKeep")
+    params["output_name"] = recipe_config.get("outputName")
     return params
