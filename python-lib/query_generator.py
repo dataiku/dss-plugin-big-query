@@ -10,14 +10,17 @@ def generate_query(params, dataset):
     logging.error(params)
     logging.error("-------------")
     # TODO: currently faking complex input, needs to be real later
-    inputs = [params["field_to_keep"]]
-    output_name = params["output_name"]
     query = SelectQuery()
     query.select_from(dataset)
 
     output_query = "SELECT\n"
-    output_query += ",\n".join([get_select_command(output_name, input_path) for input_path in inputs])
-    output_query += "\n"
+    select_query = []
+    for field_to_unnest in params["fields_to_unnest"]:
+        if "output" in field_to_unnest:
+            select_query.append(get_select_command(field_to_unnest["path"], field_to_unnest["output"]))
+        else:
+            select_query.append(get_select_command(field_to_unnest["path"]))
+    output_query += ",\n".join(select_query) + "\n"
 
     # TODO support if information are present in the connection
     # TODO unwrap if we retrieve a variable instead of a direct string
@@ -27,28 +30,28 @@ def generate_query(params, dataset):
 
     # TODO does not support conflict yet (ie: in two elements like a[].b and a[].c)
     unnest_expressions = []
-    for input in inputs:
-        input_parts = input.split("[]")[:-1]
+    for field_to_unnest in params["fields_to_unnest"]:
+        input_parts = field_to_unnest["path"].split("[]")[:-1]
         prefix = ""
         for input_part in input_parts:
             if prefix:
                 # on the last iteration of the loop from a[].b[].c[]
-                # tech_name will be a__b__c_
+                # tech_name will be a__b__c
+                tech_name = prefix + get_technical_column_name([input_part])
                 # current_path will be a__b_.c
-                tech_name = get_technical_column_name([prefix, input_part])
                 current_path = prefix + input_part
                 unnest_expressions += [get_unnest_command(current_path, tech_name)]
             else:
                 # add "dku_" key to avoid conflict with user data
                 tech_name = "dku_" + get_technical_column_name([input_part])
                 unnest_expressions += [get_unnest_command(input_part, tech_name)]
-            prefix = tech_name[:-1] # Remove the last "_" so the prefix can be joined again
+            prefix = tech_name # Remove the last "_" so the prefix can be joined again
     output_query += "\n".join(unnest_expressions) + "\n"
 
     # TODO support the output schema
     return output_query
 
-def get_select_command(default_name, path):
+def get_select_command(path, default_name = ""):
     """
     Either return the default name or infer the name form the path
     :param default_name: user defined name

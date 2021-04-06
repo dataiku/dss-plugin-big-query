@@ -1,23 +1,10 @@
 <div ng-controller="unnestRecipeController" ng-show="finishedLoading">
     <link ng-href="{{ styleSheetUrl }}" rel="stylesheet" type="text/css">
     <form class="dku-form-horizontal">
-        <h2 class="settings-section-title">Title</h2>
+        <h2 class="settings-section-title">Unnest fields</h2>
         <div class="control-group">
-            <label class="control-label">Layer(s) to retrain</label>
-            <div class="controls">
-                <select dku-bs-select
-                        ng-model="config.fieldToKeep"
-                        ng-options="l[1] as l[0] for l in inputSchema">
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="" class="control-label">new name</label>
-                <div class="controls">
-                    <input type="text" ng-model="config.outputName" />
-                </div>
-            </div>
-            <mapping-nested add-label="Add renaming" ng-model="step.params.renamings" on-change="!processorForm.$error.required ? checkAndRefresh() : ''" no-change-on-add="true" type-ahead="step.$stepState.change.columnsBeforeStep" required="true"></mapping-nested>
-
+            <mapping-nested add-label="Add output field" ng-model="config.fieldsToUnnest" on-change="!processorForm.$error.required ? checkAndRefresh() : ''"
+                            no-change-on-add="true" path-list="inputSchema" required="true"></mapping-nested>
         </div>
     </form>
 </div>

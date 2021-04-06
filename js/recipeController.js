@@ -50,10 +50,10 @@ app.service("utils", function () {
     };
 })
 
-
 app.directive('mappingNested', function(Debounce, $timeout) {
         return {
             restrict:'E',
+            // TODO clean scope
             scope: {
                 mapping: '=ngModel',
                 onChange: '&',
@@ -63,7 +63,7 @@ app.directive('mappingNested', function(Debounce, $timeout) {
                 withColor: '=?',
                 keepInvalid: '=?',
                 required: '<',
-                typeAhead: '='
+                pathList: '='
             },
             templateUrl : '/plugins/big-query/resource/templates/mapping-nested.html',
             compile: () => ({

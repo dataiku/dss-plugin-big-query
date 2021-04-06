@@ -22,6 +22,5 @@ def parse_recipe_config(recipe_config):
     params = {}
     logging.error("recipe_config:")
     logging.error(recipe_config)
-    params["field_to_keep"] = recipe_config.get("fieldToKeep")
-    params["output_name"] = recipe_config.get("outputName")
+    params["fields_to_unnest"] = recipe_config.get("fieldsToUnnest")
     return params
