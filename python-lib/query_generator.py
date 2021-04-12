@@ -38,8 +38,12 @@ def get_select_command(path, default_name = ""):
         # if exists add the ".c" part to prefix "a__b_"
         if splitted_path[-1] and splitted_path[-1].strip():
             intermediate_value += splitted_path[-1]
+
         if default_name and default_name.strip():
             return intermediate_value + " AS " + default_name
+        elif not '.' in intermediate_value:
+            # the intermediate value will be directly shown to the user, let's prettify it.
+            return intermediate_value + " AS " + intermediate_value[4:].replace("__", "_")
         else:
             return intermediate_value
     else:
