@@ -90,7 +90,7 @@ def get_unnest_command(path, name):
     :param name: name of the intermediate variable
     :return: the unnest SQL command as a String
     """
-    # TODO check if the path is working with UTF8 chars
+    # As a sidenote the column name can only be letters (a-z, A-Z), numbers (0-9), or underscores (_).
     return "LEFT JOIN UNNEST(" + path + ") AS " + name
 
 
