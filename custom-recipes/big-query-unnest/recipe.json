@@ -2,7 +2,7 @@
     "meta": {
         "label": "BigQuery Unnest",
         "description": "BigQuery",
-        "icon": "icon-beer"
+        "icon": "icon-google-bigquery"
     },
     "kind": "PYTHON",
     "selectableFromDataset": "input_dataset",

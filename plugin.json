@@ -5,7 +5,7 @@
         "label": "BigQuery",
         "description": "BigQuery",
         "author": "Dataiku",
-        "icon": "icon-beer",
+        "icon": "icon-google-bigquery",
         "licenseInfo": "Apache Software License",
         "url": "",
         "tags": []
