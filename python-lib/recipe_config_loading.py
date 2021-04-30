@@ -22,5 +22,5 @@ def parse_recipe_config(recipe_config):
     params = {}
     logging.error("recipe_config:")
     logging.error(recipe_config)
-    params["fields_to_unnest"] = recipe_config.get("fieldsToUnnest")
+    params["fields_to_unnest"] = [field for field in recipe_config.get("fieldsToUnnest") if 'path' in field]
     return params

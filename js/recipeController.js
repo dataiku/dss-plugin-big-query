@@ -13,6 +13,7 @@ app.controller('unnestRecipeController', function ($scope, utils) {
         } else {
             utils.initVariable($scope, 'fieldToKeep', '');
         }
+        $scope.styleSheetUrl = utils.getStylesheetUrl(data.pluginId);
     };
 
     const initVariables = function () {
@@ -59,6 +60,7 @@ app.directive('mappingNested', function(Debounce, $timeout) {
             noChangeOnAdd: '<',
             addLabel: '@',
             required: '<',
+            fullWidthList: '<',
             pathList: '='
         },
         templateUrl : '/plugins/big-query/resource/templates/mapping-nested.html',

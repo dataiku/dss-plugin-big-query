@@ -1,10 +1,12 @@
 import dataiku
 
+PLUGIN_ID = 'big-query'
+
 def do(payload, config, plugin_config, inputs):
     dataset = dataiku.Dataset(inputs[0]["fullName"])
     schema = dataset.read_schema()
     schema_columns = [col for col in schema]
-    response = {"inputSchema": get_elements(schema_columns)}
+    response = {"inputSchema": get_elements(schema_columns), "pluginId": PLUGIN_ID}
     return response
 
 def get_elements(columns, prefix=""):

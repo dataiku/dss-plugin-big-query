@@ -18,6 +18,10 @@
     margin-top: 5px;
 }
 
+.mapping-editor__selector {
+    text-align: right;
+}
+
 .dib {
     display: inline-block;
 }

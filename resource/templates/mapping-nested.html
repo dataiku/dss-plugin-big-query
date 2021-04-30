@@ -1,8 +1,8 @@
 <div class="mapping-editor">
-    <editable-list ng-show="!showBulk" ng-model="mapping" on-change="callback" required="required"
+    <editable-list ng-show="!showBulk" ng-model="mapping" on-change="callback" required="required" full-width-list="fullWidthList"
         add-label="{{addLabel}}" sortable="true" validate="validate" no-change-on-add="noChangeOnAdd">
 
-        <div class="controls">
+        <div class="mapping-editor__selector">
             <select dku-bs-select
                     ng-model="it.path"
                     ng-options="l[1] as l[0] for l in $parent.$parent.pathList"
@@ -10,6 +10,6 @@
             </select>
         </div>
         <i class="editable-list__arrow-icon icon-long-arrow-right"></i>
-        <div><editable-list-input type="text"  ng-model="it.output" ng-trim="false"/></div>
+        <div><editable-list-input type="text"  ng-model="it.output" ng-trim="false" placeholder="Output column name"/></div>
     </editable-list>
 </div>
