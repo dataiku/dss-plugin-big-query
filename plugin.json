@@ -2,8 +2,8 @@
     "id": "big-query",
     "version": "0.0.0",
     "meta": {
-        "label": "BigQuery",
-        "description": "BigQuery",
+        "label": "BigQuery Unnest",
+        "description": "Unnest hierarchical data from BigQuery Object or Array elements",
         "author": "Dataiku",
         "icon": "icon-google-bigquery",
         "licenseInfo": "Apache Software License",
