@@ -1,7 +1,7 @@
 {
     "meta": {
         "label": "BigQuery Unnest",
-        "description": "Allows your to unnest hierarchical data",
+        "description": "Unnest hierarchical data from BigQuery Object or Array elements",
         "icon": "icon-google-bigquery"
     },
     "kind": "PYTHON",
