@@ -11,7 +11,6 @@ def generate_query(params, dataset):
     output_query += ",\n".join(select_query) + "\n"
 
     # TODO support if information are present in the connection
-    # TODO unwrap if we retrieve a variable instead of a direct string
     dataset_params = dataset.get_config()["params"]
     output_query += "FROM `" + dataset_params["catalog"] + "`.`" + dataset_params["schema"] + "`.`" + dataset_params["table"] + "`\n"
 
