@@ -10,7 +10,6 @@ def generate_query(params, dataset):
             select_query.append(get_select_command(field_to_unnest["path"]))
     output_query += ",\n".join(select_query) + "\n"
 
-    # TODO support if information are present in the connection
     dataset_params = dataset.get_config()["params"]
     output_query += "FROM `" + dataset_params["catalog"] + "`.`" + dataset_params["schema"] + "`.`" + dataset_params["table"] + "`\n"
 
