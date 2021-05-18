@@ -3,7 +3,7 @@
         add-label="{{addLabel}}" sortable="true" validate="validate" no-change-on-add="noChangeOnAdd" class="editable-list__noflex">
 
         <div class="mapping-editor__selector editable-list__noflex">
-            <select dku-bs-select
+            <select dku-bs-select="{liveSearch:true}"
                     ng-model="it.path"
                     ng-options="l[1] as l[0] for l in $parent.$parent.pathList"
                     required="required"  class="editable-list__noflex">
