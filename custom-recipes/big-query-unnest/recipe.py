@@ -1,7 +1,9 @@
-from dataiku.customrecipe import get_recipe_config
 from dataiku.core.sql import SQLExecutor2
-from recipe_config_loading import get_input_output, parse_recipe_config
-from query_generator import generate_query
+from recipe_config_loading import get_input_output, parse_recipe_config, get_partitions
+from query_generator import generate_query, add_partitions
+from dataiku.customrecipe import get_recipe_config
+
+import logging
 
 # retrieve all the recipe UI parameters (from $scope.config)
 recipe_config = get_recipe_config()
@@ -14,6 +16,10 @@ params = parse_recipe_config(recipe_config)
 
 # Get the SQL Query and execute it
 query = generate_query(params, input_dataset)
+
+# Handle partitions
+partitions = get_partitions(output_dataset)
+query = add_partitions(query, partitions)
 
 # Push the query on the BigQuery engine and put the results of the execution of the select query into the output_dataset
 sql_executor = SQLExecutor2(dataset=input_dataset)

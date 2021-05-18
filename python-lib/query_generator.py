@@ -1,6 +1,9 @@
 # file to create the BigQuery query from the parameters
 
+import logging
+
 def generate_query(params, dataset):
+    logging.error(params)
     output_query = "SELECT\n"
     select_query = []
     for field_to_unnest in params["fields_to_unnest"]:
@@ -99,3 +102,13 @@ def get_technical_column_name(splitted_path):
     :return: a unique technical name
     """
     return "_".join(splitted_path).replace(".", "_") + "_"
+
+def add_partitions(query, partitions):
+    where_clauses = []
+    if len(partitions) > 0:
+        for partition in partitions:
+            # TODO work only with string. How to differentiate string and int?
+            where_clauses.append(partition.get("name") + " = \"" + partition.get("value") + "\"\n")
+        return query + "\nWHERE " + "\nAND ".join(where_clauses)
+    else:
+        return query
