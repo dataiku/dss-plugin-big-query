@@ -40,7 +40,7 @@ def get_select_command(path, default_name = ""):
         if default_name and default_name.strip():
             return intermediate_value + " AS " + default_name
         elif not '.' in intermediate_value:
-            # the intermediate value will be directly shown to the user, let's prettify it.
+            # the intermediate value will be directly shown to the user, let's prettify it by removing the "dku_".
             return intermediate_value + " AS " + intermediate_value[4:].replace("__", "_")
         else:
             return intermediate_value
@@ -54,31 +54,32 @@ def get_select_command(path, default_name = ""):
 def compute_unnest_commands(fields_to_unnest):
     """
     For each field describe in fields_to_unnest, create the associated UNNEST SQL query.
-    :param fields_to_unnest: a list with the fields to unnest
+    :param fields_to_unnest: a list of object with the fields to unnest
     :return: a list of string describing how ot unnest the variable in SQL format
     """
     unnest_expressions = []
     path_cache = [] # keep track of the computed path to avoid writing them multiple times
     for field_to_unnest in fields_to_unnest:
-        input_parts = field_to_unnest["path"].split("[]")[:-1]
-        prefix = ""
-        for input_part in input_parts:
-            if prefix:
-                # on the last iteration of the loop from a[].b[].c[]
-                # tech_name will be a__b__c
-                tech_name = prefix + get_technical_column_name([input_part])
-                if tech_name not in path_cache:
-                    # current_path will be a__b_.c
-                    current_path = prefix + input_part
-                    unnest_expressions += [get_unnest_command(current_path, tech_name)]
-                    path_cache.append(tech_name)
-            else:
-                # add "dku_" key to avoid conflict with user data
-                tech_name = "dku_" + get_technical_column_name([input_part])
-                if tech_name not in path_cache:
-                    unnest_expressions += [get_unnest_command(input_part, tech_name)]
-                    path_cache.append(tech_name)
-            prefix = tech_name # Remove the last "_" so the prefix can be joined again
+        if "[]" in field_to_unnest["path"]:
+            input_parts = field_to_unnest["path"].split("[]")[:-1]
+            prefix = ""
+            for input_part in input_parts:
+                if prefix:
+                    # on the last iteration of the loop from a[].b[].c[]
+                    # tech_name will be a__b__c
+                    tech_name = prefix + get_technical_column_name([input_part])
+                    if tech_name not in path_cache:
+                        # current_path will be a__b_.c
+                        current_path = prefix + input_part
+                        unnest_expressions += [get_unnest_command(current_path, tech_name)]
+                        path_cache.append(tech_name)
+                else:
+                    # add "dku_" key to avoid conflict with user data
+                    tech_name = "dku_" + get_technical_column_name([input_part])
+                    if tech_name not in path_cache:
+                        unnest_expressions += [get_unnest_command(input_part, tech_name)]
+                        path_cache.append(tech_name)
+                prefix = tech_name # Remove the last "_" so the prefix can be joined again
     return unnest_expressions
 
 def get_unnest_command(path, name):
