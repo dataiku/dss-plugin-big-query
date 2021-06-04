@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "meta": {
         "label": "BigQuery Flatten",
-        "description": "Flatten nested and repeated fields in BigQuery tables. Use this plugin to unnest Objects columns (create multiple columns from a single Object column) and/or unfold Array columns (create a row per element in the array).",
+        "description": "Flatten BigQuery datasets containing Object or Array columns.",
         "author": "Dataiku",
         "icon": "icon-google-bigquery",
         "licenseInfo": "Apache Software License",
