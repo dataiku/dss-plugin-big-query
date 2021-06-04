@@ -1,7 +1,7 @@
 {
     "meta": {
         "label": "BigQuery Flatten",
-        "description": "Use this recipe to unnest Objects columns (create multiple columns from a single Object column) and/or unfold Array columns (create a row per element in the array).",
+        "description": "Unnest Objects columns (create multiple columns from a single Object column) and/or unfold Array columns (create a row per element in the array).",
         "icon": "icon-google-bigquery"
     },
     "kind": "PYTHON",
