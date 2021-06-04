@@ -19,10 +19,10 @@ class TestQueryGenerator:
                 }
         dataset = TestDataset()
         # Simple case
-        params = {"fields_to_unnest": [{"path": "test"}]}
+        params = {"fields_to_flatten": [{"path": "test"}]}
         print(generate_query(params, dataset))
         assert generate_query(params, dataset) == "SELECT\ntest\nFROM `mycatalog`.`myschema`.`mytable`\n\n"
-        params = {"fields_to_unnest": [{"path": "test", "output": "value"}]}
+        params = {"fields_to_flatten": [{"path": "test", "output": "value"}]}
         print(generate_query(params, dataset))
         assert generate_query(params, dataset) == "SELECT\ntest AS value\nFROM `mycatalog`.`myschema`.`mytable`\n\n"
 
@@ -39,7 +39,7 @@ class TestQueryGenerator:
                 }
         dataset = TestDataset()
         # Simple case
-        params = {"fields_to_unnest": [{"path": "testValue"},
+        params = {"fields_to_flatten": [{"path": "testValue"},
                                        {"path": "testValue.hiearchical"},
                                        {"path": "test[].arrayElement[]"},
                                        {"path": "test[].subElement[].subsubElement[].finalElement"},
@@ -71,7 +71,7 @@ class TestQueryGenerator:
                 }
         dataset = TestDataset()
         # Simple case
-        params = {"fields_to_unnest": [{"path": "testValue", "output": "value1"},
+        params = {"fields_to_flatten": [{"path": "testValue", "output": "value1"},
                                        {"path": "testValue.hiearchical", "output": "value2"},
                                        {"path": "test[].arrayElement[]", "output": "value3"},
                                        {"path": "test[].subElement[].subsubElement[].finalElement", "output": "value4"},

@@ -1,6 +1,6 @@
 import dataiku
 
-PLUGIN_ID = 'big-query'
+PLUGIN_ID = 'bigquery'
 
 def do(payload, config, plugin_config, inputs):
     dataset = dataiku.Dataset(inputs[0]["fullName"])
@@ -15,11 +15,11 @@ def get_elements(columns, prefix=""):
         if col["type"] == "array":
             if col["name"] != "":
                 output += [[prefix + col["name"] + " (as is)", prefix + col["name"]]]
-                output += [[prefix + col["name"] + "[] (unnest)", prefix + col["name"] + "[]"]]
+                output += [[prefix + col["name"] + "[] (unfold)", prefix + col["name"] + "[]"]]
                 array_content = col["arrayContent"]
                 if array_content["type"] == "object":
                     output += get_elements(array_content["objectFields"], prefix + col["name"] + "[].")
-                # Note: you cannot have array of array in bigquery. Lucky us.
+                # Note: you cannot have array of array in BigQuery. Lucky us.
         elif col["type"] == "object":
             output += [[prefix + col["name"], prefix + col["name"]]]
             output += get_elements(col["objectFields"], prefix + col["name"] + ".")
