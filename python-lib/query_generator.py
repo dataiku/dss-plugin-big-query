@@ -14,13 +14,13 @@ def generate_query(params, dataset):
 
     if "catalog" in dataset_params and dataset_params["catalog"].strip():
         if "schema" in dataset_params and dataset_params["schema"].strip():
-            output_query += "FROM `" + dataset_params["catalog"] + "`.`" + dataset_params["schema"] + "`.`" + dataset_params["table"] + "`\n"
+            output_query += "FROM `" + dataset_params["catalog"] + "`.`" + dataset_params["schema"] + "`.`" + dataset_params["table"] + "` as dku_root\n"
         else:
             raise Exception("BigQuery dataset (aka schema) cannot be empty when BigQuery project (aka catalog) is specified")
     elif "schema" in dataset_params and dataset_params["schema"].strip():
-        output_query += "FROM `" + dataset_params["schema"] + "`.`" + dataset_params["table"] + "`\n"
+        output_query += "FROM `" + dataset_params["schema"] + "`.`" + dataset_params["table"] + "` as dku_root\n"
     else:
-        output_query += "FROM `" + dataset_params["table"] + "`\n"
+        output_query += "FROM `" + dataset_params["table"] + "` as dku_root\n"
 
     output_query += "\n".join(compute_unnest_commands(params["fields_to_unnest"])) + "\n"
 
@@ -54,11 +54,11 @@ def get_select_command(path, default_name = ""):
         else:
             return intermediate_value
     else:
-        #simple case
+        # simple case, starting at the root, so let's specify it to avoid ambiguous pattern
         if default_name and default_name.strip():
-            return path + " AS " + default_name
+            return "dku_root." + path + " AS " + default_name
         else:
-            return path
+            return "dku_root." + path
 
 def compute_unnest_commands(fields_to_unnest):
     """
@@ -73,8 +73,8 @@ def compute_unnest_commands(fields_to_unnest):
             input_parts = field_to_unnest["path"].split("[]")[:-1]
             prefix = ""
             for input_part in input_parts:
-                if prefix:
-                    # on the last iteration of the loop from a[].b[].c[]
+                if prefix: # element that was unnested multiple times
+                    # example of the last iteration of the loop from a[].b[].c[]
                     # tech_name will be a__b__c
                     tech_name = prefix + get_technical_column_name([input_part])
                     if tech_name not in path_cache:
@@ -82,11 +82,13 @@ def compute_unnest_commands(fields_to_unnest):
                         current_path = prefix + input_part
                         unnest_expressions += [get_unnest_command(current_path, tech_name)]
                         path_cache.append(tech_name)
-                else:
+                else: # element from the root path
                     # add "dku_" key to avoid conflict with user data
                     tech_name = "dku_" + get_technical_column_name([input_part])
                     if tech_name not in path_cache:
-                        unnest_expressions += [get_unnest_command(input_part, tech_name)]
+                        # first element, we specify that we are on the root to avoid ambiguous path
+                        current_path = "dku_root." + input_part
+                        unnest_expressions += [get_unnest_command(current_path, tech_name)]
                         path_cache.append(tech_name)
                 prefix = tech_name # Remove the last "_" so the prefix can be joined again
     return unnest_expressions
