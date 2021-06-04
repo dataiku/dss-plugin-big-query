@@ -11,7 +11,16 @@ def generate_query(params, dataset):
     output_query += ",\n".join(select_query) + "\n"
 
     dataset_params = dataset.get_config()["params"]
-    output_query += "FROM `" + dataset_params["catalog"] + "`.`" + dataset_params["schema"] + "`.`" + dataset_params["table"] + "`\n"
+
+    if "catalog" in dataset_params and dataset_params["catalog"].strip():
+        if "schema" in dataset_params and dataset_params["schema"].strip():
+            output_query += "FROM `" + dataset_params["catalog"] + "`.`" + dataset_params["schema"] + "`.`" + dataset_params["table"] + "`\n"
+        else:
+            raise Exception("BigQuery dataset (aka schema) cannot be empty when BigQuery project (aka catalog) is specified")
+    elif "schema" in dataset_params and dataset_params["schema"].strip():
+        output_query += "FROM `" + dataset_params["schema"] + "`.`" + dataset_params["table"] + "`\n"
+    else:
+        output_query += "FROM `" + dataset_params["table"] + "`\n"
 
     output_query += "\n".join(compute_unnest_commands(params["fields_to_unnest"])) + "\n"
 
