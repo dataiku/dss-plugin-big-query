@@ -21,10 +21,10 @@ class TestQueryGenerator:
         # Simple case
         params = {"fields_to_flatten": [{"path": "test"}]}
         print(generate_query(params, dataset))
-        assert generate_query(params, dataset) == "SELECT\ntest\nFROM `mycatalog`.`myschema`.`mytable`\n\n"
+        assert generate_query(params, dataset) == "SELECT\ndku_root.test\nFROM `mycatalog`.`myschema`.`mytable` as dku_root\n\n"
         params = {"fields_to_flatten": [{"path": "test", "output": "value"}]}
         print(generate_query(params, dataset))
-        assert generate_query(params, dataset) == "SELECT\ntest AS value\nFROM `mycatalog`.`myschema`.`mytable`\n\n"
+        assert generate_query(params, dataset) == "SELECT\ndku_root.test AS value\nFROM `mycatalog`.`myschema`.`mytable` as dku_root\n\n"
 
 
     def test_generate_query_complex(self):
@@ -40,20 +40,20 @@ class TestQueryGenerator:
         dataset = TestDataset()
         # Simple case
         params = {"fields_to_flatten": [{"path": "testValue"},
-                                       {"path": "testValue.hiearchical"},
-                                       {"path": "test[].arrayElement[]"},
-                                       {"path": "test[].subElement[].subsubElement[].finalElement"},
-                                       {"path": "test[].subElement[].subsubElement2[].finalElement"}
-                                       ]}
+                                        {"path": "testValue.hierarchical"},
+                                        {"path": "test[].arrayElement[]"},
+                                        {"path": "test[].subElement[].subsubElement[].finalElement"},
+                                        {"path": "test[].subElement[].subsubElement2[].finalElement"}
+                                        ]}
         print(generate_query(params, dataset))
         assert generate_query(params, dataset) == "SELECT\n" \
-                                                  "testValue,\n" \
-                                                  "testValue.hiearchical,\n" \
+                                                  "dku_root.testValue,\n" \
+                                                  "dku_root.testValue.hierarchical,\n" \
                                                   "dku_test__arrayElement_ AS test_arrayElement_,\n" \
                                                   "dku_test__subElement__subsubElement_.finalElement,\n" \
                                                   "dku_test__subElement__subsubElement2_.finalElement\n" \
-                                                  "FROM `mycatalog`.`myschema`.`mytable`\n" \
-                                                  "LEFT JOIN UNNEST(test) AS dku_test_\n" \
+                                                  "FROM `mycatalog`.`myschema`.`mytable` as dku_root\n" \
+                                                  "LEFT JOIN UNNEST(dku_root.test) AS dku_test_\n" \
                                                   "LEFT JOIN UNNEST(dku_test_.arrayElement) AS dku_test__arrayElement_\n" \
                                                   "LEFT JOIN UNNEST(dku_test_.subElement) AS dku_test__subElement_\n" \
                                                   "LEFT JOIN UNNEST(dku_test__subElement_.subsubElement) AS dku_test__subElement__subsubElement_\n" \
@@ -72,20 +72,20 @@ class TestQueryGenerator:
         dataset = TestDataset()
         # Simple case
         params = {"fields_to_flatten": [{"path": "testValue", "output": "value1"},
-                                       {"path": "testValue.hiearchical", "output": "value2"},
-                                       {"path": "test[].arrayElement[]", "output": "value3"},
-                                       {"path": "test[].subElement[].subsubElement[].finalElement", "output": "value4"},
-                                       {"path": "test[].subElement[].subsubElement2[].finalElement", "output": "value5"}
-                                       ]}
+                                        {"path": "testValue.hierarchical", "output": "value2"},
+                                        {"path": "test[].arrayElement[]", "output": "value3"},
+                                        {"path": "test[].subElement[].subsubElement[].finalElement", "output": "value4"},
+                                        {"path": "test[].subElement[].subsubElement2[].finalElement", "output": "value5"}
+                                        ]}
         print(generate_query(params, dataset))
         assert generate_query(params, dataset) == "SELECT\n" \
-                                                  "testValue AS value1,\n" \
-                                                  "testValue.hiearchical AS value2,\n" \
+                                                  "dku_root.testValue AS value1,\n" \
+                                                  "dku_root.testValue.hierarchical AS value2,\n" \
                                                   "dku_test__arrayElement_ AS value3,\n" \
                                                   "dku_test__subElement__subsubElement_.finalElement AS value4,\n" \
                                                   "dku_test__subElement__subsubElement2_.finalElement AS value5\n" \
-                                                  "FROM `mycatalog`.`myschema`.`mytable`\n" \
-                                                  "LEFT JOIN UNNEST(test) AS dku_test_\n" \
+                                                  "FROM `mycatalog`.`myschema`.`mytable` as dku_root\n" \
+                                                  "LEFT JOIN UNNEST(dku_root.test) AS dku_test_\n" \
                                                   "LEFT JOIN UNNEST(dku_test_.arrayElement) AS dku_test__arrayElement_\n" \
                                                   "LEFT JOIN UNNEST(dku_test_.subElement) AS dku_test__subElement_\n" \
                                                   "LEFT JOIN UNNEST(dku_test__subElement_.subsubElement) AS dku_test__subElement__subsubElement_\n" \
@@ -93,10 +93,10 @@ class TestQueryGenerator:
 
     def test_get_select_command(self):
         # Simple case
-        assert get_select_command("test") == "test"
-        assert get_select_command("test", "value") == "test AS value"
-        assert get_select_command("test.hierarchical.on.multiple.level") == "test.hierarchical.on.multiple.level"
-        assert get_select_command("test.hierarchical.on.multiple.level", "value") == "test.hierarchical.on.multiple.level AS value"
+        assert get_select_command("test") == "dku_root.test"
+        assert get_select_command("test", "value") == "dku_root.test AS value"
+        assert get_select_command("test.hierarchical.on.multiple.level") == "dku_root.test.hierarchical.on.multiple.level"
+        assert get_select_command("test.hierarchical.on.multiple.level", "value") == "dku_root.test.hierarchical.on.multiple.level AS value"
 
         # First level array
         assert get_select_command("test.hierarchical.on.multiple.level[]") == "dku_test_hierarchical_on_multiple_level_ AS test_hierarchical_on_multiple_level_"
@@ -125,27 +125,27 @@ class TestQueryGenerator:
         assert compute_unnest_commands([{"path": "test"}]) == []
 
         # Simple case
-        assert compute_unnest_commands([{"path": "test[]"}]) == ["LEFT JOIN UNNEST(test) AS dku_test_"]
+        assert compute_unnest_commands([{"path": "test[]"}]) == ["LEFT JOIN UNNEST(dku_root.test) AS dku_test_"]
         # we want the unnest part, so the final element is discarded
-        assert compute_unnest_commands([{"path": "test[].finalElement"}]) == ["LEFT JOIN UNNEST(test) AS dku_test_"]
+        assert compute_unnest_commands([{"path": "test[].finalElement"}]) == ["LEFT JOIN UNNEST(dku_root.test) AS dku_test_"]
 
         # Two levels unnesting
         assert compute_unnest_commands([{"path": "test[].subElement[]"}]) == \
-               ["LEFT JOIN UNNEST(test) AS dku_test_",
+               ["LEFT JOIN UNNEST(dku_root.test) AS dku_test_",
                 "LEFT JOIN UNNEST(dku_test_.subElement) AS dku_test__subElement_"]
         # we want the unnest part, so the final element is discarded
         assert compute_unnest_commands([{"path": "test[].subElement[].finalElement"}]) == \
-               ["LEFT JOIN UNNEST(test) AS dku_test_",
+               ["LEFT JOIN UNNEST(dku_root.test) AS dku_test_",
                 "LEFT JOIN UNNEST(dku_test_.subElement) AS dku_test__subElement_"]
 
         # Two levels unnesting, with common path (we don't want to unnest dku_test_ multiple time)
         assert compute_unnest_commands([{"path": "test[].subElement[]"}, {"path": "test[].subElement2[]"}]) == \
-               ["LEFT JOIN UNNEST(test) AS dku_test_",
+               ["LEFT JOIN UNNEST(dku_root.test) AS dku_test_",
                 "LEFT JOIN UNNEST(dku_test_.subElement) AS dku_test__subElement_",
                 "LEFT JOIN UNNEST(dku_test_.subElement2) AS dku_test__subElement2_"]
         # we want the unnest part, so the final element is discarded
         assert compute_unnest_commands([{"path": "test[].subElement[].finalElement"}, {"path": "test[].subElement2[].finalElement"}]) == \
-               ["LEFT JOIN UNNEST(test) AS dku_test_",
+               ["LEFT JOIN UNNEST(dku_root.test) AS dku_test_",
                 "LEFT JOIN UNNEST(dku_test_.subElement) AS dku_test__subElement_",
                 "LEFT JOIN UNNEST(dku_test_.subElement2) AS dku_test__subElement2_"]
 
