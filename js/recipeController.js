@@ -43,7 +43,7 @@ app.service("utils", function () {
     };
 
     this.getStylesheetUrl = function (pluginId) {
-        return `/plugins/${pluginId}/resource/stylesheets/dl-image-toolbox.css`;
+        return `/plugins/${pluginId}/resource/stylesheets/unnest-recipe-stylesheet.css`;
     };
 
     this.getShowHideAdvancedParamsMessage = function (showAdvancedParams) {
