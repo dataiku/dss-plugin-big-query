@@ -21,3 +21,8 @@
 .dib {
     display: inline-block;
 }
+
+.mapping-editor .editable-list .btn-group { 
+    display: -webkit-flex;
+    display: flex;
+}
