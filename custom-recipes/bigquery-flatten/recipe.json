@@ -1,7 +1,7 @@
 {
     "meta": {
-        "label": "BigQuery Unnest",
-        "description": "Unnest hierarchical data from BigQuery Object or Array elements",
+        "label": "BigQuery Flatten",
+        "description": "Unnest Objects columns (create multiple columns from a single Object column) and/or unfold Array columns (create a row per element in the array).",
         "icon": "icon-google-bigquery"
     },
     "kind": "PYTHON",
@@ -10,7 +10,7 @@
         {
             "name": "input_dataset",
             "label": "Input dataset",
-            "description": "Select a BigQuery dataset with nested data.",
+            "description": "Select a BigQuery dataset with one or more columns of type Object or Array.",
             "arity": "UNARY",
             "required": true,
             "acceptsDataset": true,
@@ -21,14 +21,14 @@
         {
             "name": "output_dataset",
             "label": "Output dataset",
-            "description": "Select a BigQuery dataset to place flatten data.",
+            "description": "Select a BigQuery dataset to store the flattened data.",
             "arity": "UNARY",
             "required": true,
             "acceptsDataset": true,
             "mustBeStrictlyType": "BigQuery"
         }
     ],
-    "paramsTemplate": "templates/unnest-recipe-template.html",
-    "paramsModule": "bigQueryUnnest.recipe",
+    "paramsTemplate": "templates/flatten-recipe-template.html",
+    "paramsModule": "bigQueryFlatten.recipe",
     "paramsPythonSetup": "helpers/recipes-helper.py"
 }

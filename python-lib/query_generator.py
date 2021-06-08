@@ -3,11 +3,11 @@
 def generate_query(params, dataset):
     output_query = "SELECT\n"
     select_query = []
-    for field_to_unnest in params["fields_to_unnest"]:
-        if "output" in field_to_unnest:
-            select_query.append(get_select_command(field_to_unnest["path"], field_to_unnest["output"]))
+    for field_to_flatten in params["fields_to_flatten"]:
+        if "output" in field_to_flatten:
+            select_query.append(get_select_command(field_to_flatten["path"], field_to_flatten["output"]))
         else:
-            select_query.append(get_select_command(field_to_unnest["path"]))
+            select_query.append(get_select_command(field_to_flatten["path"]))
     output_query += ",\n".join(select_query) + "\n"
 
     dataset_params = dataset.get_config()["params"]
@@ -22,7 +22,7 @@ def generate_query(params, dataset):
     else:
         output_query += "FROM `" + dataset_params["table"] + "` as dku_root\n"
 
-    output_query += "\n".join(compute_unnest_commands(params["fields_to_unnest"])) + "\n"
+    output_query += "\n".join(compute_unnest_commands(params["fields_to_flatten"])) + "\n"
 
     return output_query
 
@@ -37,7 +37,7 @@ def get_select_command(path, default_name = ""):
     if "[]" in path:
         # unnested value, we need to retrieve the technical value
         # We use a magic trick here since a[].b[].c will create 2 intermediate value,
-        # we just need to retreive the name of the intermediate value of a[].b[].c
+        # we just need to retrieve the name of the intermediate value of a[].b[].c
         splitted_path = path.split("[]")
         # add "dku_" key to avoid conflict with user data
         intermediate_value = "dku_" + get_technical_column_name(splitted_path[:-1])
@@ -60,17 +60,17 @@ def get_select_command(path, default_name = ""):
         else:
             return "dku_root." + path
 
-def compute_unnest_commands(fields_to_unnest):
+def compute_unnest_commands(fields_to_flatten):
     """
-    For each field describe in fields_to_unnest, create the associated UNNEST SQL query.
-    :param fields_to_unnest: a list of object with the fields to unnest
+    For each field describe in fields_to_flatten, create the associated Flatten SQL query.
+    :param fields_to_flatten: a list of object with the fields to unnest
     :return: a list of string describing how ot unnest the variable in SQL format
     """
-    unnest_expressions = []
+    flatten_expressions = []
     path_cache = [] # keep track of the computed path to avoid writing them multiple times
-    for field_to_unnest in fields_to_unnest:
-        if "[]" in field_to_unnest["path"]:
-            input_parts = field_to_unnest["path"].split("[]")[:-1]
+    for field_to_flatten in fields_to_flatten:
+        if "[]" in field_to_flatten["path"]:
+            input_parts = field_to_flatten["path"].split("[]")[:-1]
             prefix = ""
             for input_part in input_parts:
                 if prefix: # element that was unnested multiple times
@@ -80,7 +80,7 @@ def compute_unnest_commands(fields_to_unnest):
                     if tech_name not in path_cache:
                         # current_path will be a__b_.c
                         current_path = prefix + input_part
-                        unnest_expressions += [get_unnest_command(current_path, tech_name)]
+                        flatten_expressions += [get_unnest_command(current_path, tech_name)]
                         path_cache.append(tech_name)
                 else: # element from the root path
                     # add "dku_" key to avoid conflict with user data
@@ -88,10 +88,10 @@ def compute_unnest_commands(fields_to_unnest):
                     if tech_name not in path_cache:
                         # first element, we specify that we are on the root to avoid ambiguous path
                         current_path = "dku_root." + input_part
-                        unnest_expressions += [get_unnest_command(current_path, tech_name)]
+                        flatten_expressions += [get_unnest_command(current_path, tech_name)]
                         path_cache.append(tech_name)
                 prefix = tech_name # Remove the last "_" so the prefix can be joined again
-    return unnest_expressions
+    return flatten_expressions
 
 def get_unnest_command(path, name):
     """

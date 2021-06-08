@@ -1,9 +1,9 @@
 {
-    "id": "big-query",
-    "version": "0.0.0",
+    "id": "bigquery",
+    "version": "1.0.0",
     "meta": {
-        "label": "BigQuery Unnest",
-        "description": "Unnest hierarchical data from BigQuery Object or Array elements",
+        "label": "BigQuery Flatten",
+        "description": "Flatten BigQuery datasets containing Object or Array columns.",
         "author": "Dataiku",
         "icon": "icon-google-bigquery",
         "licenseInfo": "Apache Software License",

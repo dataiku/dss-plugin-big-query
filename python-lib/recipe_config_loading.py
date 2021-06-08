@@ -19,5 +19,5 @@ def parse_recipe_config(recipe_config):
     # function to parse the UI parameters of recipe_config and put them into a params dict (or better we could do a class)
     # can use this to validate the parameters and raise the appropriate errors to the UI
     params = {}
-    params["fields_to_unnest"] = [field for field in recipe_config.get("fieldsToUnnest") if 'path' in field]
+    params["fields_to_flatten"] = [field for field in recipe_config.get("fieldsToFlatten") if 'path' in field]
     return params

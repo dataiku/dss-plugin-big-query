@@ -2,9 +2,9 @@
 // as there are some problems of loading (The file that creates the module should be loaded before any other
 // and I could not find a way to do so)
 
-const app = angular.module('bigQueryUnnest.recipe', []);
+const app = angular.module('bigQueryFlatten.recipe', []);
 
-app.controller('unnestRecipeController', function ($scope, utils) {
+app.controller('flattenRecipeController', function ($scope, utils) {
 
     const updateScopeData = function (data) {
         $scope.inputSchema = data.inputSchema;
@@ -63,7 +63,7 @@ app.directive('mappingNested', function(Debounce, $timeout) {
             fullWidthList: '<',
             pathList: '='
         },
-        templateUrl : '/plugins/big-query/resource/templates/mapping-nested.html',
+        templateUrl : '/plugins/bigquery/resource/templates/mapping-nested.html',
         compile: () => ({
             pre: function (scope, element, attrs) {
                 if (angular.isUndefined(scope.mapping)) {
