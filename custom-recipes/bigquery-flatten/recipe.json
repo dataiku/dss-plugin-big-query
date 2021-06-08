@@ -1,0 +1,34 @@
+{
+    "meta": {
+        "label": "BigQuery Flatten",
+        "description": "Unnest Objects columns (create multiple columns from a single Object column) and/or unfold Array columns (create a row per element in the array).",
+        "icon": "icon-google-bigquery"
+    },
+    "kind": "PYTHON",
+    "selectableFromDataset": "input_dataset",
+    "inputRoles": [
+        {
+            "name": "input_dataset",
+            "label": "Input dataset",
+            "description": "Select a BigQuery dataset with one or more columns of type Object or Array.",
+            "arity": "UNARY",
+            "required": true,
+            "acceptsDataset": true,
+            "mustBeStrictlyType": "BigQuery"
+        }
+    ],
+    "outputRoles": [
+        {
+            "name": "output_dataset",
+            "label": "Output dataset",
+            "description": "Select a BigQuery dataset to store the flattened data.",
+            "arity": "UNARY",
+            "required": true,
+            "acceptsDataset": true,
+            "mustBeStrictlyType": "BigQuery"
+        }
+    ],
+    "paramsTemplate": "templates/flatten-recipe-template.html",
+    "paramsModule": "bigQueryFlatten.recipe",
+    "paramsPythonSetup": "helpers/recipes-helper.py"
+}

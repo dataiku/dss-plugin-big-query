@@ -1,0 +1,10 @@
+<div ng-controller="flattenRecipeController" ng-show="finishedLoading">
+    <link ng-href="{{ styleSheetUrl }}" rel="stylesheet" type="text/css">
+    <form class="dku-form-horizontal">
+        <h2 class="settings-section-title">Output columns</h2>
+        <div class="control-group">
+            <mapping-nested add-label="Add column" ng-model="config.fieldsToFlatten" on-change="!processorForm.$error.required ? checkAndRefresh() : ''"
+                            full-width-list="true" no-change-on-add="true" path-list="inputSchema" required="true"></mapping-nested>
+        </div>
+    </form>
+</div>

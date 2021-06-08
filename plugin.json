@@ -1,0 +1,13 @@
+{
+    "id": "bigquery",
+    "version": "1.0.0",
+    "meta": {
+        "label": "BigQuery Flatten",
+        "description": "Flatten BigQuery datasets containing Object or Array columns.",
+        "author": "Dataiku",
+        "icon": "icon-google-bigquery",
+        "licenseInfo": "Apache Software License",
+        "url": "",
+        "tags": []
+    }
+}

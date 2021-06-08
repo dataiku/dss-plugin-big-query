@@ -1,0 +1,13 @@
+<div class="mapping-editor">
+    <editable-list ng-show="!showBulk" ng-model="mapping" on-change="callback" required="required" full-width-list="fullWidthList"
+                   add-label="{{addLabel}}" sortable="true" validate="validate" no-change-on-add="noChangeOnAdd">
+
+        <select dku-bs-select="{liveSearch:true,size:'auto'}"
+                ng-model="it.path"
+                ng-options="l[1] as l[0] for l in $parent.$parent.pathList"
+                required="required">
+        </select>
+        <i class="editable-list__arrow-icon icon-long-arrow-right"></i>
+        <div><editable-list-input type="text"  ng-model="it.output" ng-trim="false" placeholder="Output column name"/></div>
+    </editable-list>
+</div>
