@@ -1,8 +1,8 @@
 {
-    "id": "bigquery-complextypes-toolkit",
+    "id": "dss-plugin-bigquery-toolkit",
     "version": "1.0.0",
     "meta": {
-        "label": "BigQuery complex types toolkit",
+        "label": "BigQuery toolkit",
         "description": "Tools to flatten BigQuery datasets containing Object or Array columns.",
         "author": "Dataiku",
         "icon": "icon-google-bigquery",
