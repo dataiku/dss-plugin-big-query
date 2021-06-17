@@ -63,7 +63,7 @@ app.directive('mappingNested', function(Debounce, $timeout) {
             fullWidthList: '<',
             pathList: '='
         },
-        templateUrl : '/plugins/bigquery/resource/templates/mapping-nested.html',
+        templateUrl : '/plugins/bigquery-complextypes-toolkit/resource/templates/mapping-nested.html',
         compile: () => ({
             pre: function (scope, element, attrs) {
                 if (angular.isUndefined(scope.mapping)) {

@@ -1,6 +1,6 @@
 import dataiku
 
-PLUGIN_ID = 'bigquery'
+PLUGIN_ID = 'bigquery-complextypes-toolkit'
 
 def do(payload, config, plugin_config, inputs):
     dataset = dataiku.Dataset(inputs[0]["fullName"])

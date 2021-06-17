@@ -1,9 +1,9 @@
 {
-    "id": "bigquery",
+    "id": "bigquery-complextypes-toolkit",
     "version": "1.0.0",
     "meta": {
-        "label": "BigQuery Flatten",
-        "description": "Flatten BigQuery datasets containing Object or Array columns.",
+        "label": "BigQuery complex types toolkit",
+        "description": "Tools to flatten BigQuery datasets containing Object or Array columns.",
         "author": "Dataiku",
         "icon": "icon-google-bigquery",
         "licenseInfo": "Apache Software License",
